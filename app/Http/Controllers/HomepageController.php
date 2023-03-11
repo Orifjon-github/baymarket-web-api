@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\Resources\AdditionalProductResource;
 use App\Http\Resources\CarouselResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\SettingResource;
-use App\Http\Resources\SpecialProductResource;
 use App\Http\Resources\SpecialResource;
 use App\Http\Resources\TestimonialResource;
 use App\Models\AdditionalProduct;
@@ -19,7 +17,6 @@ use App\Models\Settings\Setting;
 use App\Models\Special;
 use App\Models\Testimonial;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class HomepageController extends Controller
 {

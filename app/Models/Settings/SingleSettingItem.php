@@ -9,6 +9,8 @@ class SingleSettingItem extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function setting() {
         $this->hasOne(Setting::class);
     }

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('socials', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('setting_id')->constrained();
+            $table->foreignId('setting_id')->default(1)->constrained();
             $table->string('name');
             $table->string('url')->nullable();
             $table->text('icon');

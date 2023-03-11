@@ -1,0 +1,177 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Resources\SocialResource;
+use App\Models\Settings\Social;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+
+class SocialController extends Controller
+{
+    public function index()
+    {
+        try {
+            $socials = Social::all();
+            return response()->json([
+                'status' => 'success',
+                'code' => 0,
+                'message' => 'Social networks retrieved successfully.',
+                'data' => SocialResource::collection($socials)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 1,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $social = Social::findOrFail($id);
+            return response()->json([
+                'status' => 'success',
+                'code' => 0,
+                'message' => 'Social network retrieved successfully.',
+                'data' => SocialResource::make($social)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 1,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'url' => 'required|string|max:255',
+            'icon' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 2,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+
+        try {
+            $file = $request->file('icon');
+            $filename = uniqid('social_') . '.' . $file->getClientOriginalExtension();
+            $path = Storage::disk('public')->putFileAs('homepage/socials', $file, $filename);
+            $social = new Social([
+                'name' => $request->name,
+                'url' => $request->url,
+                'icon' => '/storage/public/' . $path
+            ]);
+            $social->save();
+            return response()->json([
+                'status' => 'success',
+                'code' => 0,
+                'message' => 'Social network saved successfully.',
+                'data' => SocialResource::make($social)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 3,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            // Get the social by ID
+            $social = Social::findOrFail($id);
+
+            // Validate the request data
+            $validatedData = $request->validate([
+                'name' => 'string',
+                'url' => 'string|nullable',
+                'icon' => 'file|image|mimes:png,jpg,jpeg,svg|max:2048',
+            ]);
+
+            // Update the social attributes
+            if ($request->input())
+            $social->name = $validatedData['name'];
+            $social->url = $validatedData['url'];
+
+            // Check if an icon file was uploaded
+            if ($request->hasFile('icon')) {
+                $icon = $request->file('icon');
+                $filename = $icon->getClientOriginalName();
+                $path = $icon->storeAs('public/homepage/socials', $filename);
+                $social->icon = '/storage/public/' . $path;
+            }
+
+            // Save the social
+            $social->save();
+
+            // Return a success response
+            return response()->json([
+                'status' => 'success',
+                'code' => 0,
+                'message' => 'Social updated successfully.',
+                'data' => SocialResource::make($social)
+            ]);
+
+        } catch (\Exception $e) {
+            // Return an error response
+            return response()->json([
+                'status' => 'error',
+                'code' => 1,
+                'message' => 'Failed to update social.',
+                'data' => ['error' => $e->getMessage()]
+            ]);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($id)
+    {
+        try {
+            // Get the social by ID
+            $social = Social::findOrFail($id);
+
+            // Delete the social's icon file if it exists
+            if ($social->icon) {
+                Storage::delete('public/homepage/socials/'.$social->icon);
+            }
+
+            // Delete the social
+            $social->delete();
+
+            // Return a success response
+            return response()->json([
+                'status' => 'success',
+                'code' => 0,
+                'message' => 'Social deleted successfully.',
+            ]);
+
+        } catch (\Exception $e) {
+            // Return an error response
+            return response()->json([
+                'status' => 'error',
+                'code' => 1,
+                'message' => 'Failed to delete social.',
+                'data' => ['error' => $e->getMessage()]
+            ]);
+        }
+    }
+}

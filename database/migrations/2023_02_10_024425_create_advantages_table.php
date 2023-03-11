@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('advantages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('setting_id')->constrained();
+            $table->foreignId('setting_id')->default(1)->constrained();
             $table->tinyInteger('num');
             $table->string('title');
             $table->text('url');
