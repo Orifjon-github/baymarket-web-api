@@ -23,9 +23,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('admin')->group(function () {
-
-    Route::post('login', [HomepageController::class, 'login']);
+Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
+    Route::post('login', [HomepageController::class, 'login'])->withoutMiddleware(['auth:sanctum']);;
     Route::prefix('settings')->group(function () {
         Route::get('/', [SettingsController::class, 'index']);
         Route::put('/update', [SettingsController::class, 'update']);
