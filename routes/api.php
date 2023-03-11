@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('admin')->group(function () {
+
+    Route::post('login', [HomepageController::class, 'login']);
     Route::prefix('settings')->group(function () {
         Route::get('/', [SettingsController::class, 'index']);
         Route::put('/update', [SettingsController::class, 'update']);
