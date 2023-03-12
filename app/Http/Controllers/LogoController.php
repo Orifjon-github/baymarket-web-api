@@ -51,6 +51,7 @@ class LogoController extends Controller
     {
         try {
 //            $validatedData = $request->validated();
+            return $request->file('url');
 
             if ($request->hasFile('url')) {
                 $file = $request->file('url');
