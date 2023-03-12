@@ -7,6 +7,7 @@ use App\Http\Resources\LogoResource;
 use App\Models\Settings\Logo;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -46,7 +47,7 @@ class LogoController extends Controller
         }
     }
 
-    public function update(Request $request, Logo $logo): \Illuminate\Http\JsonResponse
+    public function update(Request $request, Logo $logo) //: \Illuminate\Http\JsonResponse
     {
         try {
 //            $validatedData = $request->validated();
@@ -55,7 +56,7 @@ class LogoController extends Controller
                 $file = $request->file('url');
                 if ($file->isValid()) {
                     $filename = $file->getClientOriginalName();
-                    $path = $file->storeAs('/storage/homepage/logos', $filename);
+                    $path = Storage::disk('public')->putFileAs('homepage/logos', $file, $filename);
                     if ($path) {
                         $logo->url = $path;
                     } else {

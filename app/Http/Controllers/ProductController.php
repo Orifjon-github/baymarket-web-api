@@ -70,7 +70,7 @@ class ProductController extends Controller
 
         try {
             $file = $request->file('image');
-            $filename = uniqid('product_') . '.' . $file->getClientOriginalExtension();
+            $filename = $file->getClientOriginalExtension();
             $path = Storage::disk('public')->putFileAs('products', $file, $filename);
             $input = json_decode($request->input('size'), true);
 
