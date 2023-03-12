@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AdvantageController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LogoController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\SettingsController;
@@ -19,13 +21,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
-Route::post('login', [HomepageController::class, 'login'])->name('login');
+Route::post('login', [AuthController::class, 'login'])->name('login');
 
 Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
+
+    Route::resource('products', ProductController::class);
 
     Route::prefix('settings')->group(function () {
         Route::get('/', [SettingsController::class, 'index']);

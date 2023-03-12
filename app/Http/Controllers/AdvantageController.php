@@ -34,7 +34,7 @@ class AdvantageController extends Controller
 
             // Upload the file to storage
             $file = $request->file('url');
-            $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+            $filename = $file->getClientOriginalName();
             $path = $file->storeAs('/storage/public/homepage/advantages', $filename);
 
             // Create the new Advantage model instance
@@ -117,7 +117,7 @@ class AdvantageController extends Controller
             // Check if new file has been uploaded
             if ($request->hasFile('url')) {
                 $file = $request->file('url');
-                $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+                $filename = $file->getClientOriginalName();
                 $path = $file->storeAs('storage/public/homepage/advantages', $filename);
                 $advantage->url = $path;
             }

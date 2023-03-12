@@ -54,7 +54,7 @@ class LogoController extends Controller
             if ($request->hasFile('url')) {
                 $file = $request->file('url');
                 if ($file->isValid()) {
-                    $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+                    $filename = $file->getClientOriginalName();
                     $path = $file->storeAs('/storage/public/homepage/logos', $filename);
                     if ($path) {
                         $validatedData['url'] = $path;

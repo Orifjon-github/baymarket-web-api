@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProductResource;
 use App\Http\Resources\SocialResource;
+use App\Models\Product;
 use App\Models\Settings\Social;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
-class SocialController extends Controller
+class ProductController extends Controller
 {
     public function index(): \Illuminate\Http\JsonResponse
     {
         try {
-            $socials = Social::all();
+            $products = Product::all();
             return response()->json([
                 'status' => 'success',
                 'code' => 0,
-                'message' => 'Social networks retrieved successfully.',
-                'data' => SocialResource::collection($socials)
+                'message' => 'Products retrieved successfully.',
+                'data' => ProductResource::collection($products)
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -32,12 +34,12 @@ class SocialController extends Controller
     public function show($id): \Illuminate\Http\JsonResponse
     {
         try {
-            $social = Social::findOrFail($id);
+            $product = Social::findOrFail($id);
             return response()->json([
                 'status' => 'success',
                 'code' => 0,
-                'message' => 'Social network retrieved successfully.',
-                'data' => SocialResource::make($social)
+                'message' => 'Product retrieved successfully.',
+                'data' => SocialResource::make($product)
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -48,12 +50,16 @@ class SocialController extends Controller
         }
     }
 
-    public function store(Request $request) //: \Illuminate\Http\JsonResponse
+    public function store(Request $request) // : \Illuminate\Http\JsonResponse
     {
+
         $validator = Validator::make($request->all(), [
+            'category_id' => 'required|integer',
             'name' => 'required|string|max:255',
-            'url' => 'required|string|max:255',
-            'icon' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048'
+            'image' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'description' => 'required|string',
+            'time' => 'nullable|integer',
+            'size' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -65,20 +71,32 @@ class SocialController extends Controller
         }
 
         try {
-            $file = $request->file('icon');
-            $filename = $file->getClientOriginalName();
-            $path = Storage::disk('public')->putFileAs('homepage/socials', $file, $filename);
-            $social = new Social([
+            $file = $request->file('image');
+            $filename = uniqid('product_') . '.' . $file->getClientOriginalExtension();
+            $path = Storage::disk('public')->putFileAs('products', $file, $filename);
+            $input = json_decode($request->input('size'), true);
+
+            $size = array_map(function ($item) {
+                return [
+                    "name" => $item["name"],
+                    "age" => $item["age"],
+                ];
+            }, $input);
+
+            $product = new Product([
+                'category_id' => $request->category_id,
                 'name' => $request->name,
-                'url' => $request->url,
-                'icon' => '/storage/public/' . $path
+                'image' => '/storage/public/' . $path,
+                'description' => $request->description,
+                'time' => $request->time ?? null,
+                'size' => serialize($size),
             ]);
-            $social->save();
+            $product->save();
             return response()->json([
                 'status' => 'success',
                 'code' => 0,
-                'message' => 'Social network saved successfully.',
-                'data' => SocialResource::make($social)
+                'message' => 'Product saved successfully.',
+                'data' => ProductResource::make($product)
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -104,15 +122,15 @@ class SocialController extends Controller
 
             // Update the social attributes
             if ($request->input())
-            $social->name = $validatedData['name'];
+                $social->name = $validatedData['name'];
             $social->url = $validatedData['url'];
 
             // Check if an icon file was uploaded
             if ($request->hasFile('icon')) {
                 $icon = $request->file('icon');
                 $filename = $icon->getClientOriginalName();
-                $path = $icon->storeAs('/storage/public/homepage/socials', $filename);
-                $social->icon = $path;
+                $path = $icon->storeAs('public/homepage/socials', $filename);
+                $social->icon = '/storage/public/' . $path;
             }
 
             // Save the social

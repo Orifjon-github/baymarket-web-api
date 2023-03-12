@@ -16,11 +16,8 @@ use App\Models\Product;
 use App\Models\Settings\Setting;
 use App\Models\Special;
 use App\Models\Testimonial;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class HomepageController extends Controller
 {
@@ -129,22 +126,5 @@ class HomepageController extends Controller
             'message' => 'OK',
             'data' => $testimonials
         ]);
-    }
-
-    public function login(Request $request)
-    {
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            // If the credentials are invalid, return an error response
-            return response()->json(['error' => 'Invalid credentials'], 401);
-        }
-
-        $token = $user->createToken($request->email)->plainTextToken;
-
-        return response()->json([
-            'message' => 'Login successful!',
-            'token' => $token,
-        ], 200);
     }
 }
