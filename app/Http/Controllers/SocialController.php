@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class SocialController extends Controller
 {
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
         try {
             $socials = Social::all();
@@ -29,7 +29,7 @@ class SocialController extends Controller
         }
     }
 
-    public function show($id)
+    public function show($id): \Illuminate\Http\JsonResponse
     {
         try {
             $social = Social::findOrFail($id);
@@ -48,7 +48,7 @@ class SocialController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',

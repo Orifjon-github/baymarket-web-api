@@ -1,34 +1,35 @@
 <?php
 
 return [
+    /*
+     * The path to send CORS preflight requests to. You should typically leave this
+     * value set to its default value unless you have a specific need to change it.
+     */
+    'paths' => ['api/*'],
 
     /*
-    |--------------------------------------------------------------------------
-    | Cross-Origin Resource Sharing (CORS) Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure your settings for cross-origin resource sharing
-    | or "CORS". This determines what cross-origin operations may execute
-    | in web browsers. You are free to adjust these settings as needed.
-    |
-    | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
-    |
-    */
-
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
-
+     * The list of request methods that are allowed by the CORS policy.
+     */
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
-
-    'allowed_origins_patterns' => [],
-
+    /*
+     * The list of headers that are allowed by the CORS policy.
+     */
     'allowed_headers' => ['*'],
 
+    /*
+     * The list of response headers that are exposed by the CORS policy.
+     */
     'exposed_headers' => [],
 
+    /*
+     * The number of seconds that the browser should cache preflight requests.
+     */
     'max_age' => 0,
 
-    'supports_credentials' => false,
-
+    /*
+     * Indicates whether cookies should be allowed to be submitted across CORS requests.
+     */
+    'supports_credentials' => true,
 ];
+
