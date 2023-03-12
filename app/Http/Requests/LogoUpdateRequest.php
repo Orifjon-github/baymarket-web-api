@@ -25,7 +25,7 @@ class LogoUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'url' => 'required|max:255'
+            'url' => 'required|file|mimes:jpeg,png,jpg|max:2048'
         ];
     }
 }
