@@ -92,9 +92,9 @@ class AdvantageController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'num' => 'integer|unique:advantages,num,' . $id,
-                'title' => 'string|max:255',
-                'url' => 'file|mimes:jpeg,png,jpg|max:2048',
+                'num' => 'required|integer|unique:advantages,num,' . $id,
+                'title' => 'required|string|max:255',
+                'url' => 'required|file|mimes:jpeg,png,jpg|max:2048',
             ]);
 
             if ($validator->fails()) {
@@ -107,13 +107,6 @@ class AdvantageController extends Controller
                 throw new \Exception('Advantage not found.');
             }
 
-            if ($request->input('num')) {
-                $advantage->num = $request->num;
-            }
-            if ($request->input('num')) {
-                $advantage->title = $request->title;
-            }
-
             // Check if new file has been uploaded
             if ($request->hasFile('url')) {
                 $file = $request->file('url');
@@ -121,6 +114,8 @@ class AdvantageController extends Controller
                 $path = $file->storeAs('storage/public/homepage/advantages', $filename);
                 $advantage->url = $path;
             }
+            $advantage->num = $request->num;
+            $advantage->title = $request->title;
 
             $advantage->save();
             return response()->json([

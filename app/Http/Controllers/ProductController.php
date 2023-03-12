@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ProductResource;
-use App\Http\Resources\SocialResource;
 use App\Models\Product;
-use App\Models\Settings\Social;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -34,12 +32,12 @@ class ProductController extends Controller
     public function show($id): \Illuminate\Http\JsonResponse
     {
         try {
-            $product = Social::findOrFail($id);
+            $product = Product::findOrFail($id);
             return response()->json([
                 'status' => 'success',
                 'code' => 0,
                 'message' => 'Product retrieved successfully.',
-                'data' => SocialResource::make($product)
+                'data' => ProductResource::make($product)
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -110,38 +108,52 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            // Get the social by ID
-            $social = Social::findOrFail($id);
+            $product = Product::findOrFail($id);
 
             // Validate the request data
             $validatedData = $request->validate([
-                'name' => 'string',
-                'url' => 'string|nullable',
-                'icon' => 'file|image|mimes:png,jpg,jpeg,svg|max:2048',
+                'category_id' => 'required|integer',
+                'name' => 'required|string|max:255',
+                'image' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
+                'description' => 'required|string',
+                'time' => 'nullable|integer',
+                'size' => 'required',
+                'sub_title' => "nullable"
             ]);
 
-            // Update the social attributes
-            if ($request->input())
-                $social->name = $validatedData['name'];
-            $social->url = $validatedData['url'];
 
-            // Check if an icon file was uploaded
-            if ($request->hasFile('icon')) {
-                $icon = $request->file('icon');
-                $filename = $icon->getClientOriginalName();
-                $path = $icon->storeAs('public/homepage/socials', $filename);
-                $social->icon = '/storage/public/' . $path;
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $filename = $image->getClientOriginalName();
+                $path = $image->storeAs('storage/public/products', $filename);
+                $product->image = $path;
             }
 
-            // Save the social
-            $social->save();
+            $input = json_decode($request->input('size'), true);
+
+            $size = array_map(function ($item) {
+                return [
+                    "id" => $item["id"],
+                    "name" => $item["name"],
+                    "size" => $item["size"],
+                    "price" => $item["price"],
+                ];
+            }, $input);
+            $product->category_id = $request->category_id;
+            $product->name = $request->name;
+            $product->description = $request->description;
+            $product->time = $request->time;
+            $product->size = serialize($size);
+            $product->sub_title = $request->sub_title;
+
+            $product->save();
 
             // Return a success response
             return response()->json([
                 'status' => 'success',
                 'code' => 0,
-                'message' => 'Social updated successfully.',
-                'data' => SocialResource::make($social)
+                'message' => 'Product updated successfully.',
+                'data' => ProductResource::make($product)
             ]);
 
         } catch (\Exception $e) {
@@ -149,7 +161,7 @@ class ProductController extends Controller
             return response()->json([
                 'status' => 'error',
                 'code' => 1,
-                'message' => 'Failed to update social.',
+                'message' => 'Failed to update Product.',
                 'data' => ['error' => $e->getMessage()]
             ]);
         }
@@ -159,21 +171,21 @@ class ProductController extends Controller
     {
         try {
             // Get the social by ID
-            $social = Social::findOrFail($id);
+            $product = Product::findOrFail($id);
 
             // Delete the social's icon file if it exists
-            if ($social->icon) {
-                Storage::delete('public/homepage/socials/'.$social->icon);
+            if ($product->icon) {
+                Storage::delete('public/products/'.$product->icon);
             }
 
             // Delete the social
-            $social->delete();
+            $product->delete();
 
             // Return a success response
             return response()->json([
                 'status' => 'success',
                 'code' => 0,
-                'message' => 'Social deleted successfully.',
+                'message' => 'Product deleted successfully.',
             ]);
 
         } catch (\Exception $e) {
@@ -181,7 +193,7 @@ class ProductController extends Controller
             return response()->json([
                 'status' => 'error',
                 'code' => 1,
-                'message' => 'Failed to delete social.',
+                'message' => 'Failed to delete product.',
                 'data' => ['error' => $e->getMessage()]
             ]);
         }
