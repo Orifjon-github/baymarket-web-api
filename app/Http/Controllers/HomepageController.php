@@ -25,6 +25,19 @@ use Illuminate\Support\Str;
 class HomepageController extends Controller
 {
 
+    public function test() {
+        $request = Request::create('https://backend.venicepizzeria.co.uk/api/admin/login', 'POST', [
+            'email' => 'admin@example.com',
+            'password' => '123',
+        ]);
+
+        $response = app()->handle($request);
+
+        return $response;
+
+        $body = $response->getContent();
+    }
+
     public function settings(): JsonResponse
     {
         $settings = new SettingResource(Setting::first());

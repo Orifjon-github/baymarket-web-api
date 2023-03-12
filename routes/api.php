@@ -45,6 +45,7 @@ Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
 
 
 Route::get('settings', [HomepageController::class, 'settings']);
+Route::get('test', [HomepageController::class, 'test']);
 Route::get('carousels', [HomepageController::class, 'carousels']);
 Route::get('categories', [HomepageController::class, 'categories']);
 Route::get('products', [HomepageController::class, 'products']);
