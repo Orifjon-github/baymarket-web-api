@@ -50,8 +50,8 @@ class LogoController extends Controller
     public function update(LogoUpdateRequest $request, Logo $logo) //: \Illuminate\Http\JsonResponse
     {
         try {
-//            $validatedData = $request->validated();
-            return $request->file('url');
+            $validatedData = $request->validated();
+//            return $request->file('url');
 
             if ($request->hasFile('url')) {
                 $file = $request->file('url');
@@ -59,7 +59,7 @@ class LogoController extends Controller
                     $filename = $file->getClientOriginalName();
                     $path = Storage::disk('public')->putFileAs('homepage/logos', $file, $filename);
                     if ($path) {
-                        $logo->url = $path;
+                        $validatedData['url'] = $path;
                     } else {
                         throw new \Exception('Failed to store file.');
                     }
@@ -69,7 +69,7 @@ class LogoController extends Controller
             }
 
             // Update the logo with the validated data
-            $logo->save();
+            $logo->update($validatedData);
 
             // Return a response indicating success
             return response()->json([
