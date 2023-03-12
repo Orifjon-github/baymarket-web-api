@@ -47,7 +47,7 @@ class LogoController extends Controller
         }
     }
 
-    public function update(Request $request, Logo $logo) //: \Illuminate\Http\JsonResponse
+    public function update(LogoUpdateRequest $request, Logo $logo) //: \Illuminate\Http\JsonResponse
     {
         try {
 //            $validatedData = $request->validated();
