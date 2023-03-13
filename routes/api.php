@@ -38,7 +38,7 @@ Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
         ]);
         Route::resource('socials', SocialController::class)->only([
             'index', 'update', 'store', 'destroy', 'show'
-        ]);
+        ])->middleware('cors');
     });
 });
 
