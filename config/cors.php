@@ -16,6 +16,10 @@ return [
      * The list of headers that are allowed by the CORS policy.
      */
     'allowed_headers' => ['*'],
+    
+    'allowed_origins' => [
+    'http://localhost:3000',
+],
 
     /*
      * The list of response headers that are exposed by the CORS policy.
