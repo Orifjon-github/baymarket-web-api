@@ -52,7 +52,7 @@ class ProductController extends Controller
     {
         $is_image = false;
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('image') && $request->file('image')->isFile()) {
             $is_image = true;
         }
 
