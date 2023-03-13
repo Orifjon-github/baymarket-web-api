@@ -97,9 +97,9 @@ class SocialController extends Controller
 
             // Validate the request data
             $validatedData = $request->validate([
-                'name' => 'string',
-                'url' => 'string|nullable',
-                'icon' => 'file|image|mimes:png,jpg,jpeg,svg|max:2048',
+                'name' => 'required|string',
+                'url' => 'required|string|nullable',
+                'icon' => 'required|file|image|mimes:png,jpg,jpeg,svg|max:2048',
             ]);
 
             // Update the social attributes
@@ -111,7 +111,7 @@ class SocialController extends Controller
             if ($request->hasFile('icon')) {
                 $icon = $request->file('icon');
                 $filename = $icon->getClientOriginalName();
-                $path = Storage::disk('public')->putFileAs('homepage/socials', $file, $filename);
+                $path = Storage::disk('public')->putFileAs('homepage/socials', $icon, $filename);
                 $social->icon = $path;
             }
 
