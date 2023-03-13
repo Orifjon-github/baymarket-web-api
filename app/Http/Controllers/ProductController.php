@@ -147,20 +147,21 @@ class ProductController extends Controller
                 $path = $request->image;
             }
 
-            $input = json_decode($request->input('size'), true);
-            $size = array_map(function ($item) {
+            $phpArray = json_decode($request->size, true);
+
+            $phpArray = array_map(function($item) {
                 return [
                     "id" => $item["id"],
                     "name" => $item["name"],
-                    "size" => $item["size"],
-                    "price" => $item["price"],
+                    "size" => $item["size"] ?? null,
+                    "price" => $item["price"] ?? null
                 ];
-            }, $input);
+            }, $phpArray);
             $product->category_id = $request->category_id;
             $product->name = $request->name;
             $product->description = $request->description;
             $product->time = $request->time;
-            $product->size = serialize($size);
+            $product->size = serialize($phpArray);
             $product->sub_title = $request->sub_title;
             $product->image = $path;
 
