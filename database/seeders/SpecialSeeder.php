@@ -19,18 +19,18 @@ class SpecialSeeder extends Seeder
            'price' => 12,
             'title' => 'The Japanese Oishii Burger',
             'small_title' => 'this month\'s special',
-            'image' => '/storage/homepage/specials/burger-1.png'
+            'image' => 'homepage/specials/burger-1.png'
         ]);
         Special::create([
             'price' => 12,
             'title' => 'Burger With Benefits',
             'small_title' => 'festive special',
-            'image' => '/storage/homepage/specials/burger-2.png'
+            'image' => 'homepage/specials/burger-2.png'
         ]);
         Special::create([
         'price' => 12,
         'title' => 'Fatboy Combo',
-        'image' => '/storage/homepage/specials/burger-3.png'
+        'image' => 'homepage/specials/burger-3.png'
     ]);
         Special::create([
         'price' => 2,
@@ -38,7 +38,7 @@ class SpecialSeeder extends Seeder
         'image' => 'Image Soon...'
     ]);
         Special::create([
-        'image' => '/storage/homepage/specials/burger-4.png'
+        'image' => 'homepage/specials/burger-4.png'
     ]);
     }
 }

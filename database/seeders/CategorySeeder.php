@@ -17,27 +17,27 @@ class CategorySeeder extends Seeder
     {
         Category::create([
             'name' => 'Pizza',
-            'url' => '/storage/homepage/categories/pizza.svg'
+            'url' => 'homepage/categories/pizza.svg'
         ]);
         Category::create([
             'name' => 'Lasagna',
-            'url' => '/storage/homepage/categories/lasagna.png'
+            'url' => 'homepage/categories/lasagna.png'
         ]);
         Category::create([
             'name' => 'Make it better',
-            'url' => '/storage/homepage/categories/pizza.svg'
+            'url' => 'homepage/categories/pizza.svg'
         ]);
         Category::create([
             'name' => 'Salad',
-            'url' => '/storage/homepage/categories/vegetarian.svg'
+            'url' => 'homepage/categories/vegetarian.svg'
         ]);
         Category::create([
             'name' => 'Sauce',
-            'url' => '/storage/homepage/categories/sous.png'
+            'url' => 'homepage/categories/sous.png'
         ]);
         Category::create([
             'name' => 'Drink',
-            'url' => '/storage/homepage/categories/drink.png'
+            'url' => 'homepage/categories/drink.png'
         ]);
 
     }

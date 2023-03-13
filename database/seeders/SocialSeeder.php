@@ -25,7 +25,7 @@ class SocialSeeder extends Seeder
             'setting_id' => 1,
             'name' => 'facebook',
             'url' => 'https://m.facebook.com/venicepizzeriauk/ ',
-            'icon' => '/storage/homepage/setting/facebook.svg',
+            'icon' => 'homepage/setting/facebook.svg',
         ]);
 //        Social::create([
 //            'setting_id' => 1,
@@ -37,7 +37,7 @@ class SocialSeeder extends Seeder
             'setting_id' => 1,
             'name' => 'instagram',
             'url' => 'https://instagram.com/venicepizzeriauk',
-            'icon' => '/storage/homepage/setting/instagram.svg',
+            'icon' => 'homepage/setting/instagram.svg',
         ]);
     }
 }
