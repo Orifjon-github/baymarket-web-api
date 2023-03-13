@@ -50,11 +50,16 @@ class ProductController extends Controller
 
     public function store(Request $request) // : \Illuminate\Http\JsonResponse
     {
+        $is_image = false;
+
+        if ($request->hasFile('image')) {
+            $is_image = true;
+        }
 
         $validator = Validator::make($request->all(), [
             'category_id' => 'required|integer',
             'name' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
+            "image" => ($is_image) ? 'required|image|mimes:jpeg,png,jpg,svg|max:2048' : 'string',
             'description' => 'required|string',
             'time' => 'nullable|integer',
             'size' => 'required',
@@ -69,22 +74,28 @@ class ProductController extends Controller
         }
 
         try {
-            $file = $request->file('image');
-            $filename = $file->getClientOriginalExtension();
-            $path = Storage::disk('public')->putFileAs('products', $file, $filename);
-            $input = json_decode($request->input('size'), true);
+            if ($is_image) {
+                $file = $request->file('image');
+                $filename = $file->getClientOriginalExtension();
+                $path = Storage::disk('public')->putFileAs('products', $file, $filename);
+            } else {
+                $path = $request->image;
+            }
 
+            $input = json_decode($request->input('size'), true);
             $size = array_map(function ($item) {
                 return [
+                    "id" => $item["id"],
                     "name" => $item["name"],
-                    "age" => $item["age"],
+                    "size" => $item["size"],
+                    "price" => $item["price"],
                 ];
             }, $input);
 
             $product = new Product([
                 'category_id' => $request->category_id,
                 'name' => $request->name,
-                'image' => '/storage/public/' . $path,
+                'image' => $path,
                 'description' => $request->description,
                 'time' => $request->time ?? null,
                 'size' => serialize($size),
