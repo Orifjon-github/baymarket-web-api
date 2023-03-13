@@ -25,7 +25,7 @@ Route::middleware(['cors'])->group(function () {
 });
 
 
-Route::prefix('admin')->middleware(['auth:sanctum', 'cors'])->group(function () {
+Route::middleware(['auth:sanctum', 'cors'])->prefix('admin')->group(function () {
 
     Route::resource('products', ProductController::class);
 
@@ -40,7 +40,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'cors'])->group(function () 
         ]);
         Route::resource('socials', SocialController::class)->only([
             'index', 'update', 'store', 'destroy', 'show'
-        ]);
+        ])->middleware(['cors']);
     });
 });
 
