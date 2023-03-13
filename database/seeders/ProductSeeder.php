@@ -50,7 +50,7 @@ class ProductSeeder extends Seeder
                 'category_id' => 1,
                 'name' => $pizza["name"] ?? "Pizza",
                 'description' => $pizza["description"] ?? "Very tasty",
-                'image' => $pizza["image"] ?? '/storage/products/product-1.png',
+                'image' => $pizza["image"] ?? 'products/product-1.png',
                 'size' => serialize([["id" => 1, "name" => "Small", "size" => "10 inch", "price" => 9.99], ["id" => 2, "name" => "Medium","size" => "12 inch", "price" => 12.99], ["id" => 3, "name" => "Large", "size" => "14 inch", "price" => 14.99], ["id" => 4, "name" => "Extra Large", "size" => "15 inch", "price" => 17.99]]),
                 'count' => 0,
                 'time' => $pizza["time"] ?? 30,
