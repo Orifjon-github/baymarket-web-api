@@ -111,7 +111,7 @@ class SocialController extends Controller
             if ($request->hasFile('icon')) {
                 $icon = $request->file('icon');
                 $filename = $icon->getClientOriginalName();
-                $path = $icon->storeAs('/storage/public/homepage/socials', $filename);
+                $path = Storage::disk('public')->putFileAs('homepage/socials', $file, $filename);
                 $social->icon = $path;
             }
 
