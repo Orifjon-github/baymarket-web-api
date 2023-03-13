@@ -11,8 +11,7 @@ class Cors
             ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 
         if ($request->getMethod() === 'OPTIONS') {
-            $response->header('Access-Control-Allow-Headers', $request->header('Access-Control-Request-Headers'))
-                ->header('Access-Control-Max-Age', '86400');
+            $response->header('Access-Control-Allow-Headers', $request->header('Access-Control-Request-Headers'));
         }
 
 //        if ($response->status() === 500) {
