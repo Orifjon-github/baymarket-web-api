@@ -25,7 +25,7 @@ Route::middleware(['cors'])->group(function () {
 });
 
 
-Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
+Route::prefix('admin')->middleware(['auth:sanctum', 'cors'])->group(function () {
 
     Route::resource('products', ProductController::class);
 
