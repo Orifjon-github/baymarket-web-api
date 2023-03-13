@@ -15,12 +15,12 @@ class Cors
                 ->header('Access-Control-Max-Age', '86400');
         }
 
-        if ($response->status() === 500) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Internal server error'
-            ]);
-        }
+//        if ($response->status() === 500) {
+//            return response()->json([
+//                'status' => 'error',
+//                'message' => 'Internal server error'
+//            ]);
+//        }
 
         if ($response->status() === 404) {
             return response()->json([
