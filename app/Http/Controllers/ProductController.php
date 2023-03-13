@@ -50,10 +50,10 @@ class ProductController extends Controller
 
     public function store(Request $request) // : \Illuminate\Http\JsonResponse
     {
-        $is_image = false;
+        $is_image = true;
 
-        if ($request->hasFile('image') && $request->file('image')->isFile()) {
-            $is_image = true;
+        if (is_string($request->image)) {
+            $is_image = false;
         }
 
         $validator = Validator::make($request->all(), [
