@@ -9,7 +9,6 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\SettingResource;
 use App\Http\Resources\SpecialResource;
 use App\Http\Resources\TestimonialResource;
-use App\Models\AdditionalProduct;
 use App\Models\Carousel;
 use App\Models\Category;
 use App\Models\Product;
@@ -21,19 +20,6 @@ use Illuminate\Http\Request;
 
 class HomepageController extends Controller
 {
-
-    public function test() {
-        $request = Request::create('https://backend.venicepizzeria.co.uk/api/admin/login', 'POST', [
-            'email' => 'admin@example.com',
-            'password' => '123',
-        ]);
-
-        $response = app()->handle($request);
-
-        return $response;
-
-        $body = $response->getContent();
-    }
 
     public function settings(): JsonResponse
     {
@@ -84,17 +70,6 @@ class HomepageController extends Controller
             'code' => 200,
             'message' => 'OK',
             'data' => $specials
-        ]);
-    }
-
-    public function additionalProducts(): JsonResponse
-    {
-        $additional_products = AdditionalProductResource::collection(AdditionalProduct::all());
-        return response()->json([
-            'success' => true,
-            'code' => 200,
-            'message' => 'OK',
-            'data' => $additional_products
         ]);
     }
     public function carousels(): JsonResponse

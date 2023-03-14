@@ -20,6 +20,20 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
+Route::get('settings', [HomepageController::class, 'settings'])->name('settings');
+Route::get('test', [HomepageController::class, 'test']);
+Route::get('carousels', [HomepageController::class, 'carousels']);
+Route::get('categories', [HomepageController::class, 'categories']);
+Route::get('products', [HomepageController::class, 'products']);
+Route::get('category/{id}', [HomepageController::class, 'showCategory']);
+Route::get('specials', [HomepageController::class, 'specials']);
+Route::get('additional-products', [HomepageController::class, 'additionalProducts']);
+Route::get('popular-recipes', [HomepageController::class, 'popularRecipes']);
+Route::get('testimonials', [HomepageController::class, 'testimonials']);
+
+
 Route::middleware(['cors'])->group(function () {
     Route::post('login', [AuthController::class, 'login']);;
 });
@@ -44,15 +58,3 @@ Route::middleware(['auth:sanctum', 'cors'])->prefix('admin')->group(function () 
     });
 });
 
-
-
-Route::get('settings', [HomepageController::class, 'settings'])->name('settings');
-Route::get('test', [HomepageController::class, 'test']);
-Route::get('carousels', [HomepageController::class, 'carousels']);
-Route::get('categories', [HomepageController::class, 'categories']);
-Route::get('products', [HomepageController::class, 'products']);
-Route::get('category/{id}', [HomepageController::class, 'showCategory']);
-Route::get('specials', [HomepageController::class, 'specials']);
-Route::get('additional-products', [HomepageController::class, 'additionalProducts']);
-Route::get('popular-recipes', [HomepageController::class, 'popularRecipes']);
-Route::get('testimonials', [HomepageController::class, 'testimonials']);
