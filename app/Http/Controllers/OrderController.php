@@ -98,7 +98,18 @@ class OrderController extends Controller
     {
         try {
             $order = Order::with('products')->findOrFail($id);
-//            $products = $order->products()->get();
+            $orderProducts = $order->products->map(function ($product) {
+                $productData = json_decode($product->product, true);
+                return [
+                    'name' => $productData['name'],
+                    'description' => $productData['description'],
+                    'size_name' => $productData['size_name'],
+                    'size' => $productData['size'],
+                    'quantity' => $productData['quantity'],
+                    'price' => $productData['price'],
+                    'total_product_price' => $productData['total_product_price']
+                ];
+            });
 
             $orderData = [
                 'ClientName' => $order->ClientName,
@@ -110,17 +121,7 @@ class OrderController extends Controller
                 'PaymentType' => $order->PaymentType,
                 'Comment' => $order->Comment,
                 'TotalPrice' => $order->TotalPrice,
-                'Products' => $order->products->map(function ($product) {
-                    return [
-                        'name' => $product->name,
-                        'description' => $product->description,
-                        'size_name' => $product->size_name,
-                        'size' => $product->size,
-                        'quantity' => $product->quantity,
-                        'price' => $product->price,
-                        'total_product_price' => $product->total_product_price
-                    ];
-                })->toArray()
+                'Products' => $orderProducts
             ];
 
             return response()->json([
