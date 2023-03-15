@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdvantageController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LogoController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\HomepageController;
@@ -42,6 +43,7 @@ Route::middleware(['cors'])->group(function () {
 Route::middleware(['auth:sanctum', 'cors'])->prefix('admin')->group(function () {
 
     Route::resource('products', ProductController::class);
+    Route::resource('orders', OrderController::class);
 
     Route::prefix('settings')->group(function () {
         Route::get('/', [SettingsController::class, 'index']);

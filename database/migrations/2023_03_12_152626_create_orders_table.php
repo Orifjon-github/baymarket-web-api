@@ -24,7 +24,8 @@ return new class extends Migration
             $table->string("Time")->nullable();
             $table->enum("PaymentType", ['debit card', 'cash'])->default('cash');
             $table->text("Comment")->nullable();
-            $table->boolean("Confirm")->default(0);
+            $table->float("TotalPrice");
+            $table->enum("Status", ['Not Confirmed', 'Confirmed', 'Canceled', 'Delivered', 'Pick uped'])->default('Not Confirmed');
             $table->timestamps();
         });
     }
