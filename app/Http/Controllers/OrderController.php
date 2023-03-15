@@ -120,7 +120,7 @@ class OrderController extends Controller
                         'price' => $product->price,
                         'total_product_price' => $product->total_product_price
                     ];
-                })
+                })->toArray()
             ];
 
             return response()->json([
