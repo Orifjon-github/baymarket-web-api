@@ -97,8 +97,8 @@ class OrderController extends Controller
     public function show($id)
     {
         try {
-            $order = Order::findOrFail($id);
-            $products = $order->products()->get();
+            $order = Order::with('products')->findOrFail($id);
+//            $products = $order->products()->get();
 
             $orderData = [
                 'ClientName' => $order->ClientName,
@@ -110,7 +110,7 @@ class OrderController extends Controller
                 'PaymentType' => $order->PaymentType,
                 'Comment' => $order->Comment,
                 'TotalPrice' => $order->TotalPrice,
-                'Products' => $products->map(function ($product) {
+                'Products' => $order->products->map(function ($product) {
                     return [
                         'name' => $product->name,
                         'description' => $product->description,
