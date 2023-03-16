@@ -53,7 +53,7 @@ class SocialController extends Controller
 
         $is_image = false;
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('icon')) {
             $is_image = true;
         }
 
