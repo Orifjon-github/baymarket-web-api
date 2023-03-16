@@ -51,16 +51,10 @@ class SocialController extends Controller
     public function store(Request $request) //: \Illuminate\Http\JsonResponse
     {
 
-        $is_image = false;
-
-        if ($request->hasFile('icon') && is_file($request->icon)) {
-            $is_image = true;
-        }
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'url' => 'required|string|max:255',
-            "icon" => ($is_image) ? 'required|image|mimes:jpeg,png,jpg,svg|max:2048' : 'string',
+            "icon" => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -72,13 +66,10 @@ class SocialController extends Controller
         }
 
         try {
-            if ($is_image) {
                 $file = $request->file('icon');
                 $filename = $file->getClientOriginalExtension();
                 $path = Storage::disk('public')->putFileAs('homepage/socials', $file, $filename);
-            } else {
-                $path = $request->icon;
-            }
+
             $social = new Social([
                 'name' => $request->name,
                 'url' => $request->url,
@@ -106,27 +97,30 @@ class SocialController extends Controller
             // Get the social by ID
             $social = Social::findOrFail($id);
 
+            $is_image = false;
+
+            if ($request->hasFile('icon') && is_file($request->icon)) {
+                $is_image = true;
+            }
+
             // Validate the request data
             $validatedData = $request->validate([
                 'name' => 'required|string',
                 'url' => 'required|string|nullable',
-                'icon' => 'required|file|image|mimes:png,jpg,jpeg,svg|max:2048',
+                "icon" => ($is_image) ? 'required|image|mimes:jpeg,png,jpg,svg|max:2048' : 'string',
             ]);
 
-            // Update the social attributes
-            if ($request->input())
+            if ($is_image) {
+                $file = $request->file('icon');
+                $filename = $file->getClientOriginalExtension();
+                $path = Storage::disk('public')->putFileAs('homepage/socials', $file, $filename);
+            } else {
+                $path = $request->icon;
+            }
             $social->name = $validatedData['name'];
             $social->url = $validatedData['url'];
+            $social->icon = $validatedData['icon'];
 
-            // Check if an icon file was uploaded
-            if ($request->hasFile('icon')) {
-                $icon = $request->file('icon');
-                $filename = $icon->getClientOriginalName();
-                $path = Storage::disk('public')->putFileAs('homepage/socials', $icon, $filename);
-                $social->icon = $path;
-            }
-
-            // Save the social
             $social->save();
 
             // Return a success response
