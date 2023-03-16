@@ -51,9 +51,9 @@ class SocialController extends Controller
     public function store(Request $request) //: \Illuminate\Http\JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'string|max:255',
-            'url' => 'string|max:255',
-            'icon' => 'image|mimes:jpeg,png,jpg,svg|max:2048'
+            'name' => 'required|string|max:255',
+            'url' => 'required|string|max:255',
+            'icon' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048'
         ]);
 
         if ($validator->fails()) {
