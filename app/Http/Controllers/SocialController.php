@@ -71,7 +71,7 @@ class SocialController extends Controller
             $social = new Social([
                 'name' => $request->name,
                 'url' => $request->url,
-                'icon' => '/storage/public/' . $path
+                'icon' => $path
             ]);
             $social->save();
             return response()->json([
