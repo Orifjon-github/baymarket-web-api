@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\AdvantageResource;
 use App\Models\Settings\Advantage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -29,13 +30,14 @@ class AdvantageController extends Controller
             $request->validate([
                 'num' => 'required|integer|unique:advantages,num,',
                 'title' => 'required|string|max:255',
-                'url' => 'required|file|mimes:jpeg,png,jpg|max:2048'
+                'url' => 'required|file|mimes:jpeg,png,jpg,svg|max:2048'
             ]);
 
             // Upload the file to storage
             $file = $request->file('url');
             $filename = $file->getClientOriginalName();
-            $path = $file->storeAs('/storage/public/homepage/advantages', $filename);
+            $path = Storage::disk('public')->putFileAs('homepage/advantages', $file, $filename);
+
 
             // Create the new Advantage model instance
             $advantage = new Advantage([
