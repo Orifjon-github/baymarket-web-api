@@ -53,7 +53,7 @@ class SocialController extends Controller
 
         $is_image = false;
 
-        if ($request->hasFile('icon')) {
+        if ($request->hasFile('icon') && is_file($request->icon)) {
             $is_image = true;
         }
 
@@ -77,7 +77,7 @@ class SocialController extends Controller
                 $filename = $file->getClientOriginalExtension();
                 $path = Storage::disk('public')->putFileAs('homepage/socials', $file, $filename);
             } else {
-                $path = $request->image;
+                $path = $request->icon;
             }
             $social = new Social([
                 'name' => $request->name,
