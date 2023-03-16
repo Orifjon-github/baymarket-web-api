@@ -56,6 +56,12 @@ class SocialController extends Controller
             'icon' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048'
         ]);
 
+        $is_image = false;
+
+        if ($request->hasFile('image')) {
+            $is_image = true;
+        }
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
@@ -65,9 +71,13 @@ class SocialController extends Controller
         }
 
         try {
-            $file = $request->file('icon');
-            $filename = $file->getClientOriginalName();
-            $path = Storage::disk('public')->putFileAs('homepage/socials', $file, $filename);
+            if ($is_image) {
+                $file = $request->file('icon');
+                $filename = $file->getClientOriginalExtension();
+                $path = Storage::disk('public')->putFileAs('homepage/socials', $file, $filename);
+            } else {
+                $path = $request->image;
+            }
             $social = new Social([
                 'name' => $request->name,
                 'url' => $request->url,
