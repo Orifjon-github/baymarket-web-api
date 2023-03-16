@@ -93,10 +93,17 @@ class AdvantageController extends Controller
     public function update(Request $request, $id)
     {
         try {
+
+            $is_image = false;
+
+            if ($request->hasFile('icon') && is_file($request->icon)) {
+                $is_image = true;
+            }
+
             $validator = Validator::make($request->all(), [
                 'num' => 'required|integer|unique:advantages,num,' . $id,
                 'title' => 'required|string|max:255',
-                'url' => 'required|file|mimes:jpeg,png,jpg|max:2048',
+                "url" => ($is_image) ? 'required|image|mimes:jpeg,png,jpg,svg|max:2048' : 'string',
             ]);
 
             if ($validator->fails()) {
@@ -110,14 +117,16 @@ class AdvantageController extends Controller
             }
 
             // Check if new file has been uploaded
-            if ($request->hasFile('url')) {
+            if ($is_image) {
                 $file = $request->file('url');
-                $filename = $file->getClientOriginalName();
-                $path = $file->storeAs('storage/public/homepage/advantages', $filename);
-                $advantage->url = $path;
+                $filename = $file->getClientOriginalExtension();
+                $path = Storage::disk('public')->putFileAs('homepage/advantages', $file, $filename);
+            } else {
+                $path = $request->url;
             }
             $advantage->num = $request->num;
             $advantage->title = $request->title;
+            $advantage->url = $request->url;
 
             $advantage->save();
             return response()->json([
