@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\SocialResource;
-use App\Models\Settings\Social;
+use App\Http\Resources\CategoryResource;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
-class SocialController extends Controller
+class CategoryController extends Controller
 {
     public function index(): \Illuminate\Http\JsonResponse
     {
         try {
-            $socials = Social::all();
+            $categories = Category::all();
             return response()->json([
                 'status' => 'success',
                 'code' => 0,
-                'message' => 'Social networks retrieved successfully.',
-                'data' => SocialResource::collection($socials)
+                'message' => 'Categories retrieved successfully.',
+                'data' => CategoryResource::collection($categories)
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -32,12 +32,12 @@ class SocialController extends Controller
     public function show($id): \Illuminate\Http\JsonResponse
     {
         try {
-            $social = Social::findOrFail($id);
+            $category = Category::findOrFail($id);
             return response()->json([
                 'status' => 'success',
                 'code' => 0,
-                'message' => 'Social network retrieved successfully.',
-                'data' => SocialResource::make($social)
+                'message' => 'Category retrieved successfully.',
+                'data' => CategoryResource::make($category)
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -48,13 +48,12 @@ class SocialController extends Controller
         }
     }
 
-    public function store(Request $request) //: \Illuminate\Http\JsonResponse
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'url' => 'required|string|max:255',
-            "icon" => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
+            "url" => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -66,21 +65,20 @@ class SocialController extends Controller
         }
 
         try {
-                $file = $request->file('icon');
-                $filename = $file->getClientOriginalName();
-                $path = Storage::disk('public')->putFileAs('homepage/socials', $file, $filename);
+            $file = $request->file('url');
+            $filename = $file->getClientOriginalName();
+            $path = Storage::disk('public')->putFileAs('homepage/categories', $file, $filename);
 
-            $social = new Social([
+            $category = new Category([
                 'name' => $request->name,
-                'url' => $request->url,
-                'icon' => $path
+                'url' => $path
             ]);
-            $social->save();
+            $category->save();
             return response()->json([
                 'status' => 'success',
                 'code' => 0,
-                'message' => 'Social network saved successfully.',
-                'data' => SocialResource::make($social)
+                'message' => 'Category saved successfully.',
+                'data' => CategoryResource::make($category)
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -94,41 +92,39 @@ class SocialController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            // Get the social by ID
-            $social = Social::findOrFail($id);
+            // Get the category by ID
+            $category = Category::findOrFail($id);
 
             $is_image = false;
 
-            if ($request->hasFile('icon') && is_file($request->icon)) {
+            if ($request->hasFile('url') && is_file($request->url)) {
                 $is_image = true;
             }
 
             // Validate the request data
             $validatedData = $request->validate([
                 'name' => 'required|string',
-                'url' => 'required|string|nullable',
-                "icon" => ($is_image) ? 'required|image|mimes:jpeg,png,jpg,svg|max:2048' : 'string',
+                "url" => ($is_image) ? 'required|image|mimes:jpeg,png,jpg,svg|max:2048' : 'string',
             ]);
 
             if ($is_image) {
-                $file = $request->file('icon');
+                $file = $request->file('url');
                 $filename = $file->getClientOriginalName();
-                $path = Storage::disk('public')->putFileAs('homepage/socials', $file, $filename);
+                $path = Storage::disk('public')->putFileAs('homepage/categories', $file, $filename);
             } else {
-                $path = $request->icon;
+                $path = $request->url;
             }
-            $social->name = $validatedData['name'];
-            $social->url = $validatedData['url'];
-            $social->icon = $validatedData['icon'];
+            $category->name = $validatedData['name'];
+            $category->url = $path;
 
-            $social->save();
+            $category->save();
 
             // Return a success response
             return response()->json([
                 'status' => 'success',
                 'code' => 0,
-                'message' => 'Social updated successfully.',
-                'data' => SocialResource::make($social)
+                'message' => 'Category updated successfully.',
+                'data' => CategoryResource::make($category)
             ]);
 
         } catch (\Exception $e) {
@@ -136,7 +132,7 @@ class SocialController extends Controller
             return response()->json([
                 'status' => 'error',
                 'code' => 1,
-                'message' => 'Failed to update social.',
+                'message' => 'Failed to update category.',
                 'data' => ['error' => $e->getMessage()]
             ]);
         }
@@ -145,22 +141,22 @@ class SocialController extends Controller
     public function destroy($id)
     {
         try {
-            // Get the social by ID
-            $social = Social::findOrFail($id);
+            // Get the category by ID
+            $category = Category::findOrFail($id);
 
-            // Delete the social's icon file if it exists
-            if ($social->icon) {
-                Storage::delete('public/homepage/socials/'.$social->icon);
+            // Delete the category's url file if it exists
+            if ($category->url) {
+                Storage::delete('public/homepage/categories/'.$category->url);
             }
 
-            // Delete the social
-            $social->delete();
+            // Delete the category
+            $category->delete();
 
             // Return a success response
             return response()->json([
                 'status' => 'success',
                 'code' => 0,
-                'message' => 'Social deleted successfully.',
+                'message' => 'Category deleted successfully.',
             ]);
 
         } catch (\Exception $e) {
@@ -168,7 +164,7 @@ class SocialController extends Controller
             return response()->json([
                 'status' => 'error',
                 'code' => 1,
-                'message' => 'Failed to delete social.',
+                'message' => 'Failed to delete category.',
                 'data' => ['error' => $e->getMessage()]
             ]);
         }

@@ -119,7 +119,7 @@ class AdvantageController extends Controller
             // Check if new file has been uploaded
             if ($is_image) {
                 $file = $request->file('url');
-                $filename = $file->getClientOriginalExtension();
+                $filename = $file->getClientOriginalName();
                 $path = Storage::disk('public')->putFileAs('homepage/advantages', $file, $filename);
             } else {
                 $path = $request->url;

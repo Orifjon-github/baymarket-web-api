@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
            ProductSeeder::class,
            SpecialSeeder::class,
            TestimonialSeeder::class,
+           PartnershipSeeder::class
        ]);
     }
 }

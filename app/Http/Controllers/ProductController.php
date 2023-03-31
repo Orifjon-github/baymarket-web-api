@@ -76,7 +76,7 @@ class ProductController extends Controller
         try {
             if ($is_image) {
                 $file = $request->file('image');
-                $filename = $file->getClientOriginalExtension();
+                $filename = $file->getClientOriginalName();
                 $path = Storage::disk('public')->putFileAs('products', $file, $filename);
             } else {
                 $path = $request->image;
@@ -141,7 +141,7 @@ class ProductController extends Controller
 
             if ($is_image) {
                 $file = $request->file('image');
-                $filename = $file->getClientOriginalExtension();
+                $filename = $file->getClientOriginalName();
                 $path = Storage::disk('public')->putFileAs('products', $file, $filename);
             } else {
                 $path = $request->image;
